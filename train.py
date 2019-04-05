@@ -211,6 +211,5 @@ def main():
 
 
 if __name__ == '__main__':
-    global tokensProcessed
     tokensProcessed = 0
     main()
