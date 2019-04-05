@@ -15,7 +15,6 @@ from accumulate import AccumulatingOptimizer
 
 CHECKPOINT_DIR = 'checkpoint'
 SAMPLE_DIR = 'samples'
-tokensProcessed = 0
 
 
 parser = argparse.ArgumentParser(
@@ -46,6 +45,7 @@ def maketree(path):
 
 
 def main():
+    tokensProcessed = 0
     args = parser.parse_args()
     enc = encoder.get_encoder(args.model_name)
     hparams = model.default_hparams()
