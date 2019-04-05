@@ -162,7 +162,7 @@ def main():
 
         def sample_batch():
             global tokensProcessed
-            tokensProcessed = max(0, 1024 * args.batch_size)
+            tokensProcessed += 1024 * args.batch_size
             return [data_sampler.sample(1024) for _ in range(args.batch_size)]
 
         avg_loss = (0.0, 0.0)
