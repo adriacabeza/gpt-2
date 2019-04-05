@@ -15,6 +15,7 @@ from accumulate import AccumulatingOptimizer
 
 CHECKPOINT_DIR = 'checkpoint'
 SAMPLE_DIR = 'samples'
+tokensProcessed = 0
 
 
 parser = argparse.ArgumentParser(
@@ -160,13 +161,14 @@ def main():
                 fp.write('\n'.join(all_text))
 
         def sample_batch():
+            global tokensProcessed
             tokensProcessed = max(0, 1024 * args.batch_size)
             return [data_sampler.sample(1024) for _ in range(args.batch_size)]
 
         avg_loss = (0.0, 0.0)
         start_time = time.time()
-        tokensProcessed = 0
         try:
+            global tokensProcessed
             while True:
                 if counter % args.save_every == 0:
                     save()
@@ -209,4 +211,6 @@ def main():
 
 
 if __name__ == '__main__':
+    global tokensProcessed
+    tokensProcessed = 0
     main()
