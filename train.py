@@ -196,10 +196,12 @@ def main():
                         counter=counter,
                         time=time.time() - start_time,
                         loss=v_loss,
-                        avg=avg_loss[0] / avg_loss[1])),
+                        avg=avg_loss[0] / avg_loss[1],
                         tokensProc=tokensProcessed,
                         tokensTotal=data_sampler.total_size,
                         tokensPerc=tokensProcessed / data_sampler.total_size
+                    )
+                )
 
                 counter += 1
         except KeyboardInterrupt:
