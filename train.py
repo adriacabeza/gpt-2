@@ -45,7 +45,6 @@ def maketree(path):
 
 
 def main():
-    tokensProcessed = 0
     args = parser.parse_args()
     enc = encoder.get_encoder(args.model_name)
     hparams = model.default_hparams()
@@ -161,7 +160,7 @@ def main():
                 fp.write('\n'.join(all_text))
 
         def sample_batch():
-            tokensProcessed += 1024 * args.batch_size
+            tokensProcessed = max(0, 1024 * args.batch_size)
             return [data_sampler.sample(1024) for _ in range(args.batch_size)]
 
         avg_loss = (0.0, 0.0)
