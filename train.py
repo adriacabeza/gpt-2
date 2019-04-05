@@ -192,7 +192,7 @@ def main():
                             avg_loss[1] * 0.99 + 1.0)
 
                 print(
-                    '[{counter} | {time:2.2f}] loss={loss:2.2f} avg={avg:2.2f} [tokensProc={tokensProc}/{tokensTotal} | {tokensPerc:2.2f}]'
+                    '[{counter} | {time:2.2f}] loss={loss:2.2f} avg={avg:2.2f} [tokensProc={tokensProc}/{tokensTotal} | {tokensPerc:2.2f}%]'
                     .format(
                         counter=counter,
                         time=time.time() - start_time,
@@ -200,7 +200,7 @@ def main():
                         avg=avg_loss[0] / avg_loss[1],
                         tokensProc=tokensProcessed,
                         tokensTotal=data_sampler.total_size,
-                        tokensPerc=tokensProcessed / data_sampler.total_size
+                        tokensPerc=(tokensProcessed / data_sampler.total_size)*100
                     )
                 )
 
