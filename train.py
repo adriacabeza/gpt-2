@@ -165,7 +165,7 @@ def main():
 
         avg_loss = (0.0, 0.0)
         start_time = time.time()
-        
+        tokensProcessed = 0
         try:
             while True:
                 if counter % args.save_every == 0:
