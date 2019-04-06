@@ -20,7 +20,7 @@ def _get_file(files):
         with open(path, 'r') as fp:
             raw_text += fp.read()
         if len(raw_text) >= files[1]:
-            tokens = np.stack(enc.encode(raw_text))
+            tokens = np.stack(files[2].encode(raw_text))
             token_chunks.append(tokens)
             raw_text = ''
         else:
@@ -43,7 +43,7 @@ def load_dataset(enc, path, combine):
 
     raw_text = ''
     token_chunks = []
-    files = [(f,combine) for f in paths]
+    files = [(f,combine,enc) for f in paths]
     with ThreadPool(20) as pool:
         result = list(tqdm(pool.imap(_get_file,files,1), total=len(files)))
     raw_text.join(result[0])
