@@ -6,9 +6,10 @@ import tensorflow as tf
 from tqdm import tqdm
 from multiprocessing.dummy import Pool as ThreadPool
 
-def _get_file(path):
+def _get_file(args):
     raw_text = ''
     token_chunks = []
+    path = args.path
     if path.endswith('.npz'):
             # Pre-encoded
             with np.load(path) as npz:
@@ -18,7 +19,7 @@ def _get_file(path):
         # Plain text
         with open(path, 'r') as fp:
             raw_text += fp.read()
-        if len(raw_text) >= combine:
+        if len(raw_text) >= args.combine:
             tokens = np.stack(enc.encode(raw_text))
             token_chunks.append(tokens)
             raw_text = ''
@@ -42,11 +43,11 @@ def load_dataset(enc, path, combine):
 
     raw_text = ''
     token_chunks = []
-    files = [f for f in paths]
+    files = [(f,combine) for f in paths]
     with ThreadPool(20) as pool:
         result = list(tqdm(pool.imap(_get_file,files,1), total=len(files)))
     raw_text.join(result[0])
-    token_chunks.join(result[1])
+    token_chunks = result[1]
 
     if raw_text:
         tokens = np.stack(enc.encode(raw_text))
