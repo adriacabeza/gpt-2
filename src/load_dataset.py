@@ -10,21 +10,17 @@ def _get_file(files):
     token_chunks = []
     path = files[0]
     print(files[0])
-    if path.endswith('.npz'):
-            # Pre-encoded
-            with np.load(path) as npz:
-                for item in npz.files:
-                    token_chunks.append(npz[item])
+
+    # Plain text
+    with open(path, 'r') as fp:
+        raw_text += fp.read()
+        print(raw_text)
+    if len(raw_text) >= files[1]:
+        tokens = np.stack(files[2].encode(raw_text))
+        token_chunks.append(tokens)
+        raw_text = ''
     else:
-        # Plain text
-        with open(path, 'r') as fp:
-            raw_text += fp.read()
-        if len(raw_text) >= files[1]:
-            tokens = np.stack(files[2].encode(raw_text))
-            token_chunks.append(tokens)
-            raw_text = ''
-        else:
-            raw_text += '<|endoftext|>'
+        raw_text += '<|endoftext|>'
     return raw_text, token_chunks
 
 def load_dataset(enc, path, combine):
