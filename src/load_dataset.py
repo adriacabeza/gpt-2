@@ -52,10 +52,11 @@ def load_dataset(enc, path, combine):
     llista_raw_text = [result[i][0] for i in range(0,len(result))]
     llista_raw_text = [item for sublist in llista_raw_text for item in sublist ]
     raw_text.join = llista_raw_text[0]
-
+    print(raw_text)
 
     token_chunks = [result[i][1] for i in range(0,len(result))]
     token_chunks = [item for sublist in token_chunks for item in sublist]
+    print(token_chunks)
     
 
     if raw_text:
