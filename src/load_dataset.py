@@ -46,7 +46,8 @@ def load_dataset(enc, path, combine):
     files = [(f,combine,enc) for f in paths]
     with ThreadPool(100) as pool:
         result = list(tqdm(pool.imap(_get_file,files,1), total=len(files)))
-    
+        print("hola")
+    print(result)
 
 
     llista_raw_text = [result[i][0] for i in range(0,len(result))]
