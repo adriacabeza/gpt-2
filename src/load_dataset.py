@@ -44,10 +44,19 @@ def load_dataset(enc, path, combine):
     raw_text = ''
     token_chunks = []
     files = [(f,combine,enc) for f in paths]
-    with ThreadPool(20) as pool:
+    with ThreadPool(100) as pool:
         result = list(tqdm(pool.imap(_get_file,files,1), total=len(files)))
-    raw_text.join(result[0])
-    token_chunks = result[1]
+    
+
+
+    llista_raw_text = [result[i][0] for i in range(0,len(result))]
+    llista_raw_text = [item for sublist in llista_raw_text for item in sublist ]
+    raw_text.join = llista_raw_text[0]
+
+
+    token_chunks = [result[i][1] for i in range(0,len(result))]
+    token_chunks = [item for sublist in token_chunks for item in sublist]
+    
 
     if raw_text:
         tokens = np.stack(enc.encode(raw_text))
