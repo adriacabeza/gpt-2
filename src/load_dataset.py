@@ -42,7 +42,7 @@ def load_dataset(enc, path, combine):
 
     raw_text = ''
     token_chunks = []
-    files = [n for f in paths]
+    files = [f for f in paths]
     with ThreadPool(20) as pool:
         result = list(tqdm(pool.imap(_get_file,files,1), total=len(files)))
     raw_text.join(result[0])
