@@ -44,7 +44,9 @@ def load_dataset(enc, path, combine):
     raw_text = ''
     token_chunks = []
     files = [(f,combine,enc) for f in paths]
-    with ThreadPool(100) as pool:
+    print(files)
+    with ThreadPool(10) as pool:
+        print("crea threads, voy a hacer cosas paralelas")
         result = list(tqdm(pool.imap(_get_file,files,1), total=len(files)))
         print("hola")
     print(result)
