@@ -9,7 +9,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 def _get_file(args):
     raw_text = ''
     token_chunks = []
-    path = args.path
+    path = args.f
     if path.endswith('.npz'):
             # Pre-encoded
             with np.load(path) as npz:
