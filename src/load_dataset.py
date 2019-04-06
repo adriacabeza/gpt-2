@@ -9,14 +9,14 @@ def _get_file(files):
     raw_text = ''
     token_chunks = []
     path = files[0]
-    print(files[0])
+ 
 
     # Plain text
     with open(path, 'r') as fp:
         raw_text += fp.read()
-        print(raw_text)
     if len(raw_text) >= files[1]:
         tokens = np.stack(files[2].encode(raw_text))
+        print(tokens)
         token_chunks.append(tokens)
         raw_text = ''
     else:
