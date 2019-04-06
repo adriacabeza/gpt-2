@@ -8,7 +8,6 @@ from multiprocessing.dummy import Pool as ThreadPool
 def _get_file(files):
     raw_text = ''
     token_chunks = []
-    print("hola")
     path = files[0]
     print(files[0])
     if path.endswith('.npz'):
@@ -45,7 +44,7 @@ def load_dataset(enc, path, combine):
     raw_text = ''
     token_chunks = []
     files = [(f,combine,enc) for f in paths]
-    with ThreadPool(10) as pool:
+    with ThreadPool(14) as pool:
         print("crea threads, voy a hacer cosas paralelas")
         result = list(pool.imap(_get_file,files,1))
   
