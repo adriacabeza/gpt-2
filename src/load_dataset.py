@@ -3,13 +3,14 @@ import numpy as np
 import os
 import random
 import tensorflow as tf
-from tqdm import tqdm
 from multiprocessing.dummy import Pool as ThreadPool
 
 def _get_file(files):
     raw_text = ''
     token_chunks = []
+    print("hola")
     path = files[0]
+    print(files[0])
     if path.endswith('.npz'):
             # Pre-encoded
             with np.load(path) as npz:
@@ -44,12 +45,10 @@ def load_dataset(enc, path, combine):
     raw_text = ''
     token_chunks = []
     files = [(f,combine,enc) for f in paths]
-    print(files)
     with ThreadPool(10) as pool:
         print("crea threads, voy a hacer cosas paralelas")
-        result = list(tqdm(pool.imap(_get_file,files,1), total=len(files)))
-        print("hola")
-    print(result)
+        result = list(pool.imap(_get_file,files,1))
+  
 
 
     llista_raw_text = [result[i][0] for i in range(0,len(result))]
