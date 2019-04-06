@@ -8,6 +8,7 @@ import os
 import numpy as np
 import tensorflow as tf
 import time
+from multiprocessing.dummy import Pool as ThreadPool
 
 import model, sample, encoder
 from load_dataset import load_dataset, Sampler
@@ -139,20 +140,28 @@ def main():
             with open(counter_path, 'w') as fp:
                 fp.write(str(counter) + '\n')
 
+        def _get_file():
+            out = sess.run(
+                tf_sample,
+                feed_dict={context: args.batch_size * [context_tokens]})
+            for i in range(min(args.sample_num - index, args.batch_size)):
+                text = enc.decode(out[i])
+                text = '======== SAMPLE {} ========\n{}\n'.format(
+                    index + 1, text)
+                all_text.append(text)
+                index += 1
+            return text
+
+
+        
         def generate_samples():
             context_tokens = data_sampler.sample(1)
             all_text = []
             index = 0
-            while index < args.sample_num:
-                out = sess.run(
-                    tf_sample,
-                    feed_dict={context: args.batch_size * [context_tokens]})
-                for i in range(min(args.sample_num - index, args.batch_size)):
-                    text = enc.decode(out[i])
-                    text = '======== SAMPLE {} ========\n{}\n'.format(
-                        index + 1, text)
-                    all_text.append(text)
-                    index += 1
+            text = ""
+            with ThreadPool(10) as pool: 
+                result = list(pool.imap(_get_file, range(0,args.sample_num),1), total=len(args.sample_num))
+            text.join(result)
             print(text)
             maketree(os.path.join(SAMPLE_DIR, args.run_name))
             with open(
@@ -169,7 +178,10 @@ def main():
         start_time = time.time()
         try:
             global tokensProcessed
-            while True:
+            tokensProcessed #aqui tinc tokens processed 
+            data_sampler.total_size #tots els tokens processed 
+
+            while tokensProcessed < data_sampler.total_size:
                 if counter % args.save_every == 0:
                     save()
                 if counter % args.sample_every == 0:

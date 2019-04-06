@@ -3,8 +3,28 @@ import numpy as np
 import os
 import random
 import tensorflow as tf
-import tqdm
+from tqdm import tqdm
+from multiprocessing.dummy import Pool as ThreadPool
 
+def _get_file(path):
+    raw_text = ''
+    token_chunks = []
+    if path.endswith('.npz'):
+            # Pre-encoded
+            with np.load(path) as npz:
+                for item in npz.files:
+                    token_chunks.append(npz[item])
+    else:
+        # Plain text
+        with open(path, 'r') as fp:
+            raw_text += fp.read()
+        if len(raw_text) >= combine:
+            tokens = np.stack(enc.encode(raw_text))
+            token_chunks.append(tokens)
+            raw_text = ''
+        else:
+            raw_text += '<|endoftext|>'
+    return raw_text, token_chunks
 
 def load_dataset(enc, path, combine):
     paths = []
@@ -20,24 +40,14 @@ def load_dataset(enc, path, combine):
         # Assume glob
         paths = glob.glob(path)
 
-    token_chunks = []
     raw_text = ''
-    for path in tqdm.tqdm(paths):
-        if path.endswith('.npz'):
-            # Pre-encoded
-            with np.load(path) as npz:
-                for item in npz.files:
-                    token_chunks.append(npz[item])
-        else:
-            # Plain text
-            with open(path, 'r') as fp:
-                raw_text += fp.read()
-            if len(raw_text) >= combine:
-                tokens = np.stack(enc.encode(raw_text))
-                token_chunks.append(tokens)
-                raw_text = ''
-            else:
-                raw_text += '<|endoftext|>'
+    token_chunks = []
+    files = [n for f in paths]
+    with ThreadPool(20) as pool:
+        result = list(tqdm(pool.imap(_get_file,files,1), total=len(files)))
+    raw_text.join(result[0])
+    token_chunks.join(result[1])
+
     if raw_text:
         tokens = np.stack(enc.encode(raw_text))
         token_chunks.append(tokens)
