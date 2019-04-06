@@ -6,10 +6,10 @@ import tensorflow as tf
 from tqdm import tqdm
 from multiprocessing.dummy import Pool as ThreadPool
 
-def _get_file(args):
+def _get_file(files):
     raw_text = ''
     token_chunks = []
-    path = args.f
+    path = files[0]
     if path.endswith('.npz'):
             # Pre-encoded
             with np.load(path) as npz:
@@ -19,7 +19,7 @@ def _get_file(args):
         # Plain text
         with open(path, 'r') as fp:
             raw_text += fp.read()
-        if len(raw_text) >= args.combine:
+        if len(raw_text) >= files[1]:
             tokens = np.stack(enc.encode(raw_text))
             token_chunks.append(tokens)
             raw_text = ''
